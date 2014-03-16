@@ -2,9 +2,13 @@ apply plugin: 'android'
 
 def computeVersionName() {
     def Properties props = new Properties()
-    def propFile = new File(project.getRootDir(),"local.properties")
+    def propFile = new File(project.getRootDir(), "local.properties")
     props.load(new FileInputStream(propFile))
-    def build = Integer.parseInt(project.VERSION_BUILD) + 1;
+
+    def build = 0
+    if (props.contains("VERSION_BUILD")) {
+        build = Integer.parseInt(props[VERSION_BUILD]) + 1
+    }
     props.setProperty("VERSION_BUILD", String.valueOf(build))
     OutputStream out = new FileOutputStream(propFile);
     props.store(out, "");
