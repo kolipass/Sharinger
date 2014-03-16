@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Sharinger</string>
+    <string name="share_name">Smart Copy</string>
+    <string name="smart_share_name">Smart Share</string>
+    <string name="geted_string">Received:</string>
+    <string name="empty">Empty string can not be copied :(</string>
+
+</resources>

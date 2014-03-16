@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello_world">Данное приложение решает проблему потери заголовков при шаринге страниц и прочего контента.
+        Этот экран является заглушкой. Закрой меня и попробуй пошарить</string>
+    <string name="geted_string">Получено:</string>
+    <string name="empty">Пустая строка не может быть скопирована</string>
+
+</resources>
