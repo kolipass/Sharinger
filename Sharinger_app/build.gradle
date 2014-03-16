@@ -2,16 +2,13 @@ apply plugin: 'android'
 
 def computeVersionName() {
     def Properties props = new Properties()
-    def propFile = new File(project.getRootDir(),"gradle.properties")
+    def propFile = new File(project.getRootDir(),"local.properties")
     props.load(new FileInputStream(propFile))
     def build = Integer.parseInt(project.VERSION_BUILD) + 1;
     props.setProperty("VERSION_BUILD", String.valueOf(build))
     OutputStream out = new FileOutputStream(propFile);
     props.store(out, "");
     out.close();
-
-
-
 
     def versionName = project.VERSION_MAJOR + "." + project.VERSION_MINOR + "." + project.VERSION_PATCH + "." + build
     versionName = String.valueOf(project.VERSION_SNAPSHOT).length() > 0 ? versionName + "-" + project.VERSION_SNAPSHOT : versionName;
