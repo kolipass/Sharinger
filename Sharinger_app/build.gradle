@@ -1,49 +1,74 @@
 apply plugin: 'android'
 
-def computeVersionName() {
-    def Properties props = new Properties()
-    def propFile = new File(project.getRootDir(), "local.properties")
-    props.load(new FileInputStream(propFile))
+def getVersion() {
 
-    def build = 0
-    if (props.contains("VERSION_BUILD")) {
-        build = Integer.parseInt(props[VERSION_BUILD]) + 1
+    def version = project.VERSION_MAJOR + "." + project.VERSION_MINOR + "." + project.VERSION_PATCH
+
+    if (Integer.valueOf(project.VERSION_SNAPSHOT) == 1) {
+        def Properties props = new Properties()
+        def propFile = new File(project.getRootDir(), "local.properties")
+        props.load(new FileInputStream(propFile))
+
+        def build = 0
+        if (props.getProperty("VERSION_BUILD") != null) {
+            build = Integer.parseInt(props.getProperty("VERSION_BUILD"))
+        }
+        version += "." + String.valueOf(build) + "-" + "SNAPSHOT";
     }
-    props.setProperty("VERSION_BUILD", String.valueOf(build))
-    OutputStream out = new FileOutputStream(propFile);
-    props.store(out, "");
-    out.close();
 
-    def versionName = project.VERSION_MAJOR + "." + project.VERSION_MINOR + "." + project.VERSION_PATCH + "." + build
-    versionName = String.valueOf(project.VERSION_SNAPSHOT).length() > 0 ? versionName + "-" + project.VERSION_SNAPSHOT : versionName;
+    println(":version=" + version);
+    return version
+}
+task incVersion << {
+    if (Integer.valueOf(project.VERSION_SNAPSHOT) == 1) {
+        def Properties props = new Properties()
+        def propFile = new File(project.getRootDir(), "local.properties")
+        props.load(new FileInputStream(propFile))
 
-    return versionName
+        def build = 0
+        if (props.containsKey("VERSION_BUILD")) {
+            build = Integer.parseInt(props.getProperty("VERSION_BUILD")) + 1
+        }
+        props.setProperty("VERSION_BUILD", String.valueOf(build))
+        OutputStream out = new FileOutputStream(propFile);
+        props.store(out, "");
+        out.close();
+    } else{
+        def Properties props = new Properties()
+        def propFile = new File(project.getRootDir(), "gradle.properties")
+        props.load(new FileInputStream(propFile))
+
+        def build = 0
+        if (props.containsKey("VERSION_PATCH")) {
+            build = Integer.parseInt(props.getProperty("VERSION_PATCH")) + 1
+        }
+        props.setProperty("VERSION_PATCH", String.valueOf(build))
+        OutputStream out = new FileOutputStream(propFile);
+        props.store(out, "");
+        out.close();
+    }
 }
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
-
+    buildToolsVersion '19.0.3'
+    android.aaptOptions.useAaptPngCruncher = true
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 10
         targetSdkVersion 19
-        versionName computeVersionName()
+        versionName getVersion()
         versionCode Integer.parseInt(project.VERSION_CODE)
+
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
             applicationVariants.all { variant ->
                 def file = variant.outputFile
                 variant.outputFile = new File(file.parent, file.name.replace(".apk", "-" + defaultConfig.versionName + ".apk"))
             }
         }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
