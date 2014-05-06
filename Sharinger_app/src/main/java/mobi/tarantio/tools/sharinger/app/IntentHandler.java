@@ -42,14 +42,24 @@ public class IntentHandler {
      * @return верент измененный body
      */
 
-    private String checkBracketsCloseUrl(String body) {
+    public String checkBracketsCloseUrl(String body) {
         if (body != null && body.length() > 0) {
-            int pos = body.indexOf(")");
-            while (pos != -1) {
-                body = body.substring(0, pos) + divider + body.substring(pos, body.length());
+            body =  addDivider(body,"(", false);
+            body =  addDivider(body,")", true);
+        }
+        return body;
+    }
 
-                pos = body.indexOf(")", pos + divider.length() + 1);
+    private String addDivider(String body, String brackets, boolean before) {
+        int pos = body.indexOf(brackets);
+        while (pos != -1) {
+            if (before) {
+                body = body.substring(0, pos) + divider + body.substring(pos, body.length());
+            } else {
+                body = body.substring(0, pos + 1) + divider + body.substring(pos + 1, body.length());
             }
+
+            pos = body.indexOf(brackets, pos + divider.length() + 1);
         }
         return body;
     }
