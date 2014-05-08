@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,16 +26,48 @@ public class ShareListActivity extends ListActivity {
     private String divider = " ";
     private String subject;
     private String body;
+    private ListHeader listHeader;
+
+    private class ListHeader {
+        EditText editText;
+        LinearLayout linearLayout;
+        String text = null;
+
+        private ListHeader() {
+            linearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.list_header, null);
+            if (linearLayout != null) {
+                editText = (EditText) linearLayout.findViewById(R.id.editText);
+            }
+        }
+
+        public View getView(String text) {
+            this.text = text;
+            editText.setText(text);
+            return linearLayout;
+        }
+
+        public String getText() {
+            if (editText != null) {
+                return String.valueOf(editText.getText());
+            } else return text;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(android.R.layout.list_content);
+        setContentView(R.layout.list_content);
+
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+        tintManager.setTintColor(getResources().getColor(R.color.statusbar_bg));
 
 
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
+
 
         if (Intent.ACTION_SEND.equals(action) && type != null && ("text/plain".equals(type))) {
             body = new IntentHandler(divider).handleSendText(intent);
@@ -45,8 +79,17 @@ public class ShareListActivity extends ListActivity {
                 share();
             }
         } else {
-            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
+            //TEST
+            body = "Куча гифов http://developerslife.ru/";
+            setListTitle(body);
+            share();
+//            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setListTitle(String body) {
+        listHeader = new ListHeader();
+        getListView().addHeaderView(listHeader.getView(body), null, false);
     }
 
     public void share() {
@@ -66,15 +109,15 @@ public class ShareListActivity extends ListActivity {
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {
-        ShareIntentListAdapter adapter = (ShareIntentListAdapter) l.getAdapter();
-        ResolveInfo info = adapter.getItem(position);
+        ShareIntentListAdapter adapter = (ShareIntentListAdapter) getListAdapter();
+        ResolveInfo info = adapter.getItem((int) id);
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
         if (info.activityInfo != null) {
             intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
         }
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, body);
+        intent.putExtra(Intent.EXTRA_TEXT, listHeader != null ? listHeader.getText() : body);
         startActivity(intent);
         finish();
     }
@@ -125,8 +168,8 @@ public class ShareListActivity extends ListActivity {
 
             try {
                 String label = resolveInfo.loadLabel(context.getPackageManager()).toString();
-                if (label != null) {
-                    TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                TextView textView = (TextView) view.findViewById(android.R.id.text1);
+                if (label != null && textView != null) {
                     textView.setText(label);
                 }
             } catch (Exception e) {
@@ -134,8 +177,8 @@ public class ShareListActivity extends ListActivity {
             }
             try {
                 String description = String.valueOf(resolveInfo.nonLocalizedLabel);
-                if (description != null) {
-                    TextView textView = (TextView) view.findViewById(android.R.id.text2);
+                TextView textView = (TextView) view.findViewById(android.R.id.text2);
+                if (description != null && textView != null) {
                     textView.setText(description);
                 }
             } catch (Exception e) {
