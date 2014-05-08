@@ -72,7 +72,7 @@ public class ShareListActivity extends ListActivity {
         if (Intent.ACTION_SEND.equals(action) && type != null && ("text/plain".equals(type))) {
             body = new IntentHandler(divider).handleSendText(intent);
             subject = intent.getStringExtra(EXTRA_SUBJECT);
-            setTitle(body);
+            setListTitle(body);
             if (body == null || body.length() == 0) {
                 Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
             } else {
