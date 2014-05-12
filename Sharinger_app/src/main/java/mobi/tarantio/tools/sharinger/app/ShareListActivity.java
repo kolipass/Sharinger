@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -29,14 +30,14 @@ public class ShareListActivity extends ListActivity {
     private ListHeader listHeader;
 
     private class ListHeader {
-        EditText editText;
+        TextView editText;
         LinearLayout linearLayout;
         String text = null;
 
         private ListHeader() {
             linearLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.list_header, null);
             if (linearLayout != null) {
-                editText = (EditText) linearLayout.findViewById(R.id.editText);
+                editText = (TextView) linearLayout.findViewById(R.id.editText);
             }
         }
 
@@ -70,13 +71,20 @@ public class ShareListActivity extends ListActivity {
 
 
         if (Intent.ACTION_SEND.equals(action) && type != null && ("text/plain".equals(type))) {
-            body = new IntentHandler(divider).handleSendText(intent);
-            subject = intent.getStringExtra(EXTRA_SUBJECT);
-            setListTitle(body);
-            if (body == null || body.length() == 0) {
-                Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
+            receiveExtraIntent(intent);
+        } else if (Intent.ACTION_CHOOSER.equals(action)) {
+            Parcelable pa = intent.getParcelableExtra(Intent.EXTRA_INTENT);
+            if (pa != null) {
+                if (!(pa instanceof Intent)) {
+                    Log.w("ChooseActivity", "Initial intent #"
+                            + " not an Intent: " + pa);
+                    finish();
+                    return;
+                }
+                receiveExtraIntent((Intent) pa);
             } else {
-                share();
+                Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
+                finish();
             }
         } else {
             //TEST
@@ -84,6 +92,17 @@ public class ShareListActivity extends ListActivity {
             setListTitle(body);
             share();
 //            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void receiveExtraIntent(Intent intent) {
+        body = new IntentHandler(divider).handleSendText(intent);
+        subject = intent.getStringExtra(EXTRA_SUBJECT);
+        setListTitle(body);
+        if (body == null || body.length() == 0) {
+            Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
+        } else {
+            share();
         }
     }
 
