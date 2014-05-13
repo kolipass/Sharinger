@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".ShareListActivity"
-            android:label="@string/smart_share_name"
+            android:label="@string/app_name"
             android:theme="@style/FullBleedTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
