@@ -204,7 +204,7 @@ public class ShareListActivity extends ListActivity {
                 e.printStackTrace();
             }
             try {
-                Drawable icon = resolveInfo.activityInfo.applicationInfo.loadIcon(context.getPackageManager());
+                Drawable icon = resolveInfo.activityInfo.loadIcon(context.getPackageManager());
                 if (icon != null) {
                     ImageView image = (ImageView) view.findViewById(android.R.id.icon);
                     image.setImageDrawable(icon);
