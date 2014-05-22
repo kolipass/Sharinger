@@ -47,6 +47,7 @@ task incVersion << {
         props.store(out, "");
         out.close();
     }
+    getVersion();
 }
 
 android {
