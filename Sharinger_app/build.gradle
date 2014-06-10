@@ -52,7 +52,7 @@ task incVersion << {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    buildToolsVersion '19.1.0'
     android.aaptOptions.useAaptPngCruncher = true
     defaultConfig {
         minSdkVersion 10
