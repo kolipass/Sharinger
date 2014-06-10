@@ -3,6 +3,7 @@
     <string name="app_name">Sharinger</string>
     <string name="share_name">Smart Copy</string>
     <string name="smart_share_name">Smart Share</string>
+    <string name="full_screen_preview">Полкоэкранный просмотр</string>
     <string name="geted_string">Получено:</string>
     <string name="empty">Пустая строка не может быть скопирована</string>
 

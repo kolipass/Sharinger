@@ -4,6 +4,7 @@
     <string name="app_name">Sharinger</string>
     <string name="share_name">Smart Copy</string>
     <string name="smart_share_name">Smart Share</string>
+    <string name="full_screen_preview">Full screen preview</string>
     <string name="geted_string">Received:</string>
     <string name="empty">Empty string can not be copied :(</string>
 

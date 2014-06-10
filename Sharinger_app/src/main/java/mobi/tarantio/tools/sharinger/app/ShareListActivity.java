@@ -108,7 +108,7 @@ public class ShareListActivity extends ListActivity {
 
     private void setListTitle(String body) {
         listHeader = new ListHeader();
-        getListView().addHeaderView(listHeader.getView(body), null, false);
+        getListView().addHeaderView(listHeader.getView(body), null, true);
     }
 
     public void share() {
@@ -128,6 +128,13 @@ public class ShareListActivity extends ListActivity {
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        if (position == 0 && listHeader != null) {
+            Intent intent = new Intent(ShareListActivity.this, TextViewActivity.class);
+            intent.putExtra(TextViewActivity.TEXT, listHeader.getText());
+            startActivity(intent);
+            return;
+        }
+
         ShareIntentListAdapter adapter = (ShareIntentListAdapter) getListAdapter();
         ResolveInfo info = adapter.getItem((int) id);
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
