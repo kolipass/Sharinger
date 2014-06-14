@@ -119,7 +119,7 @@ public class ShareListActivity extends ListActivity {
             if (activities != null && !activities.isEmpty()) {
 
                 ShareIntentListAdapter adapter = new ShareIntentListAdapter(this, R.layout.list_item
-                        , removeCurrentPackage(activities));
+                        , removeCurrentPackage(removeNonExported(activities)));
                 setListAdapter(adapter);
             }
         } catch (NullPointerException e) {
@@ -137,17 +137,36 @@ public class ShareListActivity extends ListActivity {
 
         ShareIntentListAdapter adapter = (ShareIntentListAdapter) getListAdapter();
         ResolveInfo info = adapter.getItem((int) id);
-        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-        if (info.activityInfo != null) {
-            intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+
+        if (checkExported(info)) {
+
+            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            if (info.activityInfo != null) {
+                intent.setClassName(info.activityInfo.packageName, info.activityInfo.name);
+            }
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, listHeader != null ? listHeader.getText() : body);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
         }
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, listHeader != null ? listHeader.getText() : body);
-        startActivity(intent);
-        finish();
     }
 
+    private boolean checkExported(ResolveInfo info) {
+        return info.activityInfo.exported;
+    }
+
+    private List<ResolveInfo> removeNonExported(List<ResolveInfo> activities) {
+        List<ResolveInfo> resolveInfos = new ArrayList<ResolveInfo>();
+        for (ResolveInfo info : activities) {
+            if (info.activityInfo != null && checkExported(info)) {
+                resolveInfos.add(info);
+            }
+        }
+        return resolveInfos;
+    }
     private List<ResolveInfo> removeCurrentPackage(List<ResolveInfo> activities) {
         List<ResolveInfo> resolveInfos = new ArrayList<ResolveInfo>();
         for (ResolveInfo info : activities) {

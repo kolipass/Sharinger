@@ -6,5 +6,6 @@
     <string name="full_screen_preview">Полкоэкранный просмотр</string>
     <string name="geted_string">Получено:</string>
     <string name="empty">Пустая строка не может быть скопирована</string>
+    <string name="permission_denied">Permission denied for the item</string>
 
 </resources>

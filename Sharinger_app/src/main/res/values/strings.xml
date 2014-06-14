@@ -7,5 +7,6 @@
     <string name="full_screen_preview">Full screen preview</string>
     <string name="geted_string">Received:</string>
     <string name="empty">Empty string can not be copied :(</string>
+    <string name="permission_denied">Permission denied for the item</string>
 
 </resources>
