@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Intent.EXTRA_SUBJECT;
@@ -119,7 +118,7 @@ public class ShareListActivity extends ListActivity {
             if (activities != null && !activities.isEmpty()) {
 
                 ShareIntentListAdapter adapter = new ShareIntentListAdapter(this, R.layout.list_item
-                        , removeCurrentPackage(removeNonExported(activities)));
+                        , new ShareIntentListBuilder().build(activities));
                 setListAdapter(adapter);
             }
         } catch (NullPointerException e) {
@@ -156,25 +155,6 @@ public class ShareListActivity extends ListActivity {
 
     private boolean checkExported(ResolveInfo info) {
         return info.activityInfo.exported;
-    }
-
-    private List<ResolveInfo> removeNonExported(List<ResolveInfo> activities) {
-        List<ResolveInfo> resolveInfos = new ArrayList<ResolveInfo>();
-        for (ResolveInfo info : activities) {
-            if (info.activityInfo != null && checkExported(info)) {
-                resolveInfos.add(info);
-            }
-        }
-        return resolveInfos;
-    }
-    private List<ResolveInfo> removeCurrentPackage(List<ResolveInfo> activities) {
-        List<ResolveInfo> resolveInfos = new ArrayList<ResolveInfo>();
-        for (ResolveInfo info : activities) {
-            if (info.activityInfo != null && !info.activityInfo.packageName.contains("sharinger")) {
-                resolveInfos.add(info);
-            }
-        }
-        return resolveInfos;
     }
 
     public class ShareIntentListAdapter extends BaseAdapter {
