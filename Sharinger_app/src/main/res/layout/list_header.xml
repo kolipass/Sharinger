@@ -14,10 +14,9 @@
         android:text="@string/geted_string"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
+    <mobi.tarantio.tools.sharinger.app.ExpandableTextView
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:maxLines="3" />
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
