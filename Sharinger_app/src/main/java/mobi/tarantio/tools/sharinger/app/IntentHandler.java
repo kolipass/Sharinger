@@ -13,13 +13,16 @@ import static android.content.Intent.EXTRA_TEXT;
  */
 public class IntentHandler {
 
-    private String divider;
+    private String divider = " ";
+
+    public IntentHandler() {
+    }
 
     public IntentHandler(String divider) {
         this.divider = divider;
     }
 
-    public String handleSendText(Intent intent) {
+    public String handleSendText(Intent intent, boolean whithoutBrackets) {
         String sharedBodyText = intent.getStringExtra(EXTRA_TEXT);
         String sharedTitleText = intent.getStringExtra(EXTRA_SUBJECT);
 
@@ -27,7 +30,7 @@ public class IntentHandler {
         if (sharedBodyText != null || sharedTitleText != null) {
             String title = sharedTitleText != null && sharedBodyText != null && !sharedBodyText.contains(sharedTitleText) ? sharedTitleText : null;
             String body = sharedBodyText != null ? sharedBodyText : null;
-            body = checkBracketsCloseUrl(body);
+            body = whithoutBrackets ? clearBracketsCloseUrl(body) : checkBracketsCloseUrl(body);
 
             rawText = title != null ? title : "";
             if (rawText.length() > 0) {
@@ -62,8 +65,31 @@ public class IntentHandler {
         return body;
     }
 
+    /**
+     * Метод нужен для удаления скобок вокруг url
+     *
+     * @param body текст сообщения
+     * @return верент измененный body
+     */
+
+    public String clearBracketsCloseUrl(String body) {
+
+        String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(body);
+        while (m.find()) {
+            String urlStr = m.group();
+            if (urlStr.startsWith("(") && urlStr.endsWith(")")) {
+
+                String urlWithoutBrackets = urlStr.substring(1, urlStr.length() - 1);
+                body = body.replace(urlStr, urlWithoutBrackets);
+            }
+        }
+
+        return body;
+    }
+
     private String addDivider(String body) {
-        String tempString = body.substring(1, body.length() - 1);
-        return divider + tempString + divider;
+        return divider + body + divider;
     }
 }

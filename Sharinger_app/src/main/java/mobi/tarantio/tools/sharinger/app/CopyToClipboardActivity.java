@@ -21,7 +21,7 @@ public class CopyToClipboardActivity extends Activity {
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null && ("text/plain".equals(type))) {
-            String text = new IntentHandler(divider).handleSendText(intent);
+            String text = new IntentHandler(divider).handleSendText(intent, false);
             if (text == null || text.length() == 0) {
                 Toast.makeText(this, R.string.empty, Toast.LENGTH_SHORT).show();
             } else {

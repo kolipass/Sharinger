@@ -95,7 +95,7 @@ public class ShareListActivity extends ListActivity {
     }
 
     private void receiveExtraIntent(Intent intent) {
-        body = new IntentHandler(divider).handleSendText(intent);
+        body = new IntentHandler(divider).handleSendText(intent, false);
         subject = intent.getStringExtra(EXTRA_SUBJECT);
         setListTitle(body);
         if (body == null || body.length() == 0) {
@@ -145,12 +145,22 @@ public class ShareListActivity extends ListActivity {
             }
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            intent.putExtra(Intent.EXTRA_TEXT, listHeader != null ? listHeader.getText() : body);
+            intent.putExtra(Intent.EXTRA_TEXT, getTextToIntent(info.activityInfo.packageName));
             startActivity(intent);
             finish();
         } else {
             Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getTextToIntent(String packageName) {
+
+        if ("com.tumblr".equals(packageName)) {
+            return new IntentHandler().handleSendText(getIntent(),true);
+        }
+        if (listHeader != null) {
+            return listHeader.getText();
+        } else return body;
     }
 
     private boolean checkExported(ResolveInfo info) {
