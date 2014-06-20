@@ -2,6 +2,9 @@ package mobi.tarantio.tools.sharinger.app;
 
 import android.content.Intent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static android.content.Intent.EXTRA_SUBJECT;
 import static android.content.Intent.EXTRA_TEXT;
 
@@ -43,24 +46,24 @@ public class IntentHandler {
      */
 
     public String checkBracketsCloseUrl(String body) {
-        if (body != null && body.length() > 0) {
-            body =  addDivider(body,"(", false);
-            body =  addDivider(body,")", true);
+
+        String regex = "\\(?\\b(http://|www[.])[-A-Za-z0-9+&amp;@#/%?=~_()|!:,.;]*[-A-Za-z0-9+&amp;@#/%=~_()|]";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(body);
+        while (m.find()) {
+            String urlStr = m.group();
+            if (urlStr.startsWith("(") && urlStr.endsWith(")")) {
+
+                String urlWithoutBrackets = urlStr.substring(1, urlStr.length() - 1);
+                body = body.replace(urlWithoutBrackets, addDivider(urlWithoutBrackets));
+            }
         }
+
         return body;
     }
 
-    private String addDivider(String body, String brackets, boolean before) {
-        int pos = body.indexOf(brackets);
-        while (pos != -1) {
-            if (before) {
-                body = body.substring(0, pos) + divider + body.substring(pos, body.length());
-            } else {
-                body = body.substring(0, pos + 1) + divider + body.substring(pos + 1, body.length());
-            }
-
-            pos = body.indexOf(brackets, pos + divider.length() + 1);
-        }
-        return body;
+    private String addDivider(String body) {
+        String tempString = body.substring(1, body.length() - 1);
+        return divider + tempString + divider;
     }
 }
