@@ -51,7 +51,7 @@ public class ShareListActivity extends ListActivity {
 //            if (editText != null) {
 //                return String.valueOf(editText.getText());
 //            } else
-                
+
                 return text;
         }
     }

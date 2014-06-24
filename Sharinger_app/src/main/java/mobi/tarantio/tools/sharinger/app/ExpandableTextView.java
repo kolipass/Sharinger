@@ -13,7 +13,7 @@ import android.widget.TextView;
  */
 public class ExpandableTextView extends TextView {
     private static final int DEFAULT_TRIM_LENGTH = 96;
-    private static final String ELLIPSIS = '\u0000' + " .....";
+    private static final String ELLIPSIS = '\u0000' + " \u21E3";
 
     private CharSequence originalText;
     private CharSequence trimmedText;
