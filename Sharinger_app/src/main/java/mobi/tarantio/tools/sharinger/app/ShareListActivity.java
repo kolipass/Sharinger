@@ -47,9 +47,12 @@ public class ShareListActivity extends ListActivity {
         }
 
         public String getText() {
-            if (editText != null) {
-                return String.valueOf(editText.getText());
-            } else return text;
+            //todo add Edittext
+//            if (editText != null) {
+//                return String.valueOf(editText.getText());
+//            } else
+                
+                return text;
         }
     }
 
