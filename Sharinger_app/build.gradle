@@ -19,6 +19,7 @@ def getVersion() {
     println(":version=" + version);
     return version
 }
+
 task incVersion << {
     if (Integer.valueOf(project.VERSION_SNAPSHOT) == 1) {
         def Properties props = new Properties()
@@ -33,7 +34,7 @@ task incVersion << {
         OutputStream out = new FileOutputStream(propFile);
         props.store(out, "");
         out.close();
-    } else{
+    } else {
         def Properties props = new Properties()
         def propFile = new File(project.getRootDir(), "gradle.properties")
         props.load(new FileInputStream(propFile))
@@ -51,18 +52,22 @@ task incVersion << {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    signingConfigs {
+        release
+    }
+    compileSdkVersion 20
+    buildToolsVersion '20'
     android.aaptOptions.useAaptPngCruncher = true
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 19
+        targetSdkVersion 20
         versionName getVersion()
         versionCode Integer.parseInt(project.VERSION_CODE)
 
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             applicationVariants.all { variant ->
@@ -72,7 +77,26 @@ android {
         }
     }
 }
+// http://stackoverflow.com/questions/18328730/how-to-create-a-release-signed-apk-file-using-gradle
+def Properties signingProps = new Properties()
+def signingPropFile = new File('signing.properties')
+if (signingPropFile.canRead()) {
+    signingProps.load(new FileInputStream(signingPropFile))
 
+    if (signingProps != null && signingProps.containsKey('STORE_FILE') && signingProps.containsKey('STORE_PASSWORD') &&
+            signingProps.containsKey('KEY_ALIAS') && signingProps.containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.storeFile = file(signingProps['STORE_FILE'])
+        android.signingConfigs.release.storePassword = signingProps['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = signingProps['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = signingProps['KEY_PASSWORD']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
+    }
+} else {
+    println 'signing.properties not found'
+    android.buildTypes.release.signingConfig = null
+}
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
