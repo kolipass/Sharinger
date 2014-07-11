@@ -1,0 +1,17 @@
+{
+  "name": "Sheringer - copy url with </title>",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Copy url with </title>",
+  "icons": {
+	"128": "icon.png" ,
+    "19": "images/19.png",           // optional
+    "38": "images/38.png"            // optional
+  },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "permissions": ["tabs", "<all_urls>"]
+}
