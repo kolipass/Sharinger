@@ -1,8 +1,8 @@
 chrome.extension.onMessage.addListener(function(request, sender) {
   if (request.action == "getSource") {
-    message.innerText ="Copied: "+ request.source;
-    copyTextToClipboard(request.source);
-
+    message.innerText ="Copied: "+ request.source.message;
+    copyTextToClipboard(request.source.message);
+    initSocialSharing(request.source.url, 'Sharing', request.source.message, request.source.message);
   }
 });
 
@@ -11,7 +11,7 @@ function onWindowLoad() {
   var message = document.querySelector('#message');
 
   chrome.tabs.executeScript(null, {
-    file: "getPagesTitleAndUrl.js"
+    file: "js/getPagesTitleAndUrl.js"
   }, function() {
     // If you try and inject into an extensions page or the webstore/NTP you'll get an error
     if (chrome.extension.lastError) {
