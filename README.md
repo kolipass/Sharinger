@@ -1,7 +1,7 @@
 Sharinger - sharing tool for Android
 =========
 
-Sharinger brouser extensions is here https://github.com/kolipass/Sharinger-Brouser-Extensions
+Sharinger browser extensions is here https://github.com/kolipass/Sharinger-Browser-Extensions
 
 Applications such as a browser, share Urls with page title (```</title>```). Title is marked as subject of the message, Url is marked as the message body. 
 But most of messenger don't take information from subject.
